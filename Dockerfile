@@ -1,67 +1,42 @@
-# ===============================
-# Build frontend (Vite)
-# ===============================
-FROM node:22-alpine AS node
+FROM php:8.2-fpm
 
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-# ===============================
-# PHP + Laravel
-# ===============================
-FROM php:8.2-fpm-alpine
-
-# Dependencias del sistema
-RUN apk add --no-cache \
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
     nginx \
-    curl \
-    libpng \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    oniguruma-dev \
-    libxml2-dev \
-    zip \
+    git \
     unzip \
-    bash \
-    postgresql-dev
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    libpq-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+        gd \
+        zip \
+        pdo \
+        pdo_mysql \
+        pdo_pgsql
 
-# Extensiones PHP
-RUN docker-php-ext-configure gd \
-    --with-freetype \
-    --with-jpeg \
- && docker-php-ext-install \
-    pdo \
-    pdo_pgsql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd
-
-# Composer
+# Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
+# Directorio de trabajo
+WORKDIR /var/www
 
-# Copiar proyecto
+# Copiar archivos del proyecto
 COPY . .
 
-# Copiar build de Vite
-COPY --from=node /app/public/build ./public/build
+# Permisos
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 775 storage bootstrap/cache
 
-# Instalar dependencias PHP
+# Instalar dependencias Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Permisos
-RUN chown -R www-data:www-data storage bootstrap/cache
-
-# Nginx config
+# Copiar config de nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 8080
+EXPOSE 10000
 
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+CMD service nginx start && php-fpm
