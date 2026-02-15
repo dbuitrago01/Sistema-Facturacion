@@ -4,16 +4,16 @@ import laravel from 'laravel-vite-plugin';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/js/app.js'], // Solo JS, que importa el CSS
-            refresh: true,                 // útil para desarrollo
+            input: ['resources/js/app.js'], // Solo JS, que importa CSS
+            refresh: true, // desarrollo
         }),
     ],
-    base: '/',   // importante: usa rutas relativas para producción
+    base: '/',
     build: {
-        manifest: true,
         outDir: 'public/build',
+        manifest: true,
         rollupOptions: {
-            input: ['resources/js/app.js'], // Solo JS, que importa el CSS
+            input: ['resources/js/app.js'], // Solo JS
         },
     },
 });
