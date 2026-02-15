@@ -4,8 +4,9 @@ import laravel from 'laravel-vite-plugin';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/js/app.js'], // Solo JS, que importa CSS
-            refresh: true, // desarrollo
+            input: ['resources/js/app.js'], // solo JS, que importa CSS
+            refresh: true,
+            buildDirectory: 'vite', // manifest dentro de public/build/vite
         }),
     ],
     base: '/',
@@ -13,7 +14,7 @@ export default defineConfig({
         outDir: 'public/build',
         manifest: true,
         rollupOptions: {
-            input: ['resources/js/app.js'], // Solo JS
+            input: ['resources/js/app.js'],
         },
     },
 });
