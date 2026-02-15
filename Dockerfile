@@ -35,6 +35,9 @@ RUN chown -R www-data:www-data /var/www \
 # Instalar dependencias Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+RUN mkdir -p /var/www/storage/framework/sessions \
+    && chown -R www-data:www-data /var/www/storage \
+    && chmod -R 775 /var/www/storage
 
 
 
@@ -49,4 +52,5 @@ CMD php artisan config:clear \
     && php artisan view:clear \
     && service nginx start \
     && php-fpm
+
 
