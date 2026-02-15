@@ -34,6 +34,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex items-center justify-center overflow-x-hidden">
 <div class="layout-container flex w-full h-screen overflow-hidden">
