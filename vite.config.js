@@ -6,6 +6,15 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
+            // GENERAR MANIFEST PARA PRODUCCIÓN
+            buildDirectory: 'build',
         }),
     ],
+    build: {
+        manifest: true,
+        outDir: 'public/build',
+        rollupOptions: {
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+        },
+    },
 });
