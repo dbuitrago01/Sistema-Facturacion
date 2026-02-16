@@ -1,10 +1,15 @@
 FROM php:8.2-fpm
 
-# Instalar dependencias del sistema
+# =========================
+# 1. DEPENDENCIAS DEL SISTEMA
+# =========================
 RUN apt-get update && apt-get install -y \
     nginx \
     git \
     unzip \
+    curl \
+    nodejs \
+    npm \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -18,39 +23,58 @@ RUN apt-get update && apt-get install -y \
         pdo_mysql \
         pdo_pgsql
 
-# Instalar Composer
+# =========================
+# 2. COMPOSER
+# =========================
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Directorio de trabajo
+# =========================
+# 3. WORKDIR
+# =========================
 WORKDIR /var/www
 
-# Copiar archivos del proyecto
+# =========================
+# 4. COPIAR PROYECTO
+# =========================
 COPY . .
 
-# Permisos
+# =========================
+# 5. PERMISOS
+# =========================
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-
-# Instalar dependencias Laravel
+# =========================
+# 6. DEPENDENCIAS PHP
+# =========================
 RUN composer install --no-dev --optimize-autoloader
 
+# =========================
+# 7. VITE (ESTO ES LO CRÍTICO)
+# =========================
+RUN npm install
+RUN npm run build
+
+# =========================
+# 8. STORAGE
+# =========================
 RUN mkdir -p /var/www/storage/framework/sessions \
     && chown -R www-data:www-data /var/www/storage \
     && chmod -R 775 /var/www/storage
 
-
-
-# Copiar config de nginx
+# =========================
+# 9. NGINX
+# =========================
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 10000
 
+# =========================
+# 10. START
+# =========================
 CMD php artisan config:clear \
     && php artisan cache:clear \
     && php artisan route:clear \
     && php artisan view:clear \
     && service nginx start \
     && php-fpm
-
-
