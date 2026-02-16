@@ -159,7 +159,7 @@
                 }
             });
 
-            // Finalizar venta
+           // Finalizar venta
             document.getElementById('checkoutBtn').addEventListener('click', () => {
                 if(cart.length === 0){
                     alert('El carrito está vacío');
@@ -170,19 +170,33 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({ items: cart })
                 })
-                .then(res => res.json())
-                .then(data => {
+                .then(async res => {
+                    let data;
+
+                    try {
+                        data = await res.json();
+                    } catch (e) {
+                        throw new Error('Respuesta inválida del servidor');
+                    }
+
+                    if (!res.ok) {
+                        // 401 / 422 / 500 controlados
+                        alert(data.message ?? 'Error al procesar la venta');
+                        return;
+                    }
+
                     alert(data.message);
                     cart = [];
                     updateCartTable();
                 })
                 .catch(err => {
-                    // err.text().then(t => console.log(t)); // muestra error real en consola
-                    alert('Error al registrar venta');
+                    console.error(err);
+                    alert('Error inesperado al registrar la venta');
                 });
             });
 
