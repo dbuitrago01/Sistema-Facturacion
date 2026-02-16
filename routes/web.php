@@ -22,6 +22,7 @@ Route::get('/', function () {
 
 //RUTA VALIDACION DE AUTENTICACION
     Route::middleware('auth')->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -42,7 +43,7 @@ Route::get('/', function () {
     
 
     Route::get('/facturacion', [FacturacionController::class, 'index'])->name('facturacion.index');
-    Route::post('/ventas', [VentaController::class, 'store'])->name('ventas.store');
+    Route::post('/ventas', [VentaController::class, 'store'])->middleware('auth')->name('ventas.store');
     
     Route::get('/inventario', [InventarioController::class, 'index'])
     ->name('stock.index');

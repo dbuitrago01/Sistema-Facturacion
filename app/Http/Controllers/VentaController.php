@@ -13,7 +13,12 @@ use App\Models\StockMovimiento;
 class VentaController extends Controller
 {
     public function store(Request $request)
-    {
+    { 
+        if (!Auth::check()) {
+            return response()->json(['message' => 'No autenticado'], 401);
+        }
+
+
         $request->validate([
             'items'             => 'required|array|min:1',
             'items.*.id'        => 'required|exists:items,id',
@@ -23,6 +28,7 @@ class VentaController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
+                
 
                 // 1️⃣ Crear la venta
                 $venta = Venta::create([
@@ -98,7 +104,9 @@ class VentaController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al registrar la venta',
-                'error'   => $e->getMessage()
+                'error'   => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
             ], 500);
         }
     }
