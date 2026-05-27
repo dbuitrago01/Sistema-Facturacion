@@ -26,7 +26,7 @@ class ReporteExcelService
         return $this->generarExcel($ventas, 'ventas_totales.xlsx');
     }
 
-    // ✅ VENTAS POR FECHA 
+    // VENTAS POR FECHA 
     public function ventasPorFecha($inicio, $fin)
 {
     $inicio = \Carbon\Carbon::parse($inicio)->startOfDay();
@@ -47,7 +47,7 @@ class ReporteExcelService
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
 
-    // 🟢 ENCABEZADOS
+   
     $sheet->fromArray([
         ['ID', 'Usuario', 'Total', 'Fecha']
     ]);

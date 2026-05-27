@@ -60,7 +60,7 @@ RUN npm run build
 # =========================
 RUN mkdir -p /var/www/storage/framework/sessions \
     && chown -R www-data:www-data /var/www/storage \
-    && chmod -R 775 /var/www/storage
+    && chmod -R 777 /var/www/storage
 
 # =========================
 # 9. NGINX
