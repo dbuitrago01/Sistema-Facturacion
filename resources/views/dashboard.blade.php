@@ -23,7 +23,7 @@
             </a>
 
             <a href="{{ route('stock.index') }}" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                <h3 class="text-lg font-bold">📦 Stock</ h3>
+                <h3 class="text-lg font-bold">📦 Stock</h3>
                 <p class="text-gray-600">Inventario</p>
             </a>
             <a href="{{ route('stock.movimientos') }}" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
